@@ -280,14 +280,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.11.1"
-  pdf_image_renderer:
-    dependency: "direct main"
-    description:
-      name: pdf_image_renderer
-      sha256: b4c2f8663efa0d81be673100581a2915c3edc7684d2d675fa7090a257cafcf90
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.6.2"
   pdf_widget_wrapper:
     dependency: transitive
     description:

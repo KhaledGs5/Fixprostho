@@ -128,9 +128,15 @@ class _FormExampleState extends State<FormExample> {
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
+    double screenHeight = MediaQuery.of(context).size.height;
+
+    double buttonPadding = screenWidth * 0.05;
+    double buttonFontSize = screenWidth * 0.02;
+    double textFontSize = screenWidth * 0.04;
+
     return Center(
       child: Container(
-        width: screenWidth * 0.4,
+        width: screenWidth * 0.7,
         child: Form(
           key: _formKey,
           child: Column(
@@ -144,7 +150,7 @@ class _FormExampleState extends State<FormExample> {
                     child: Text(
                       'Nombre Des Etudiants :',
                       style: TextStyle(
-                        fontSize: 20,
+                        fontSize: screenWidth > 500 ? 25 : 15,
                         fontWeight: FontWeight.bold,
                         color: Colors.black,
                       ),
@@ -154,8 +160,8 @@ class _FormExampleState extends State<FormExample> {
                     margin: const EdgeInsets.only(bottom: 20, left: 10),
                     child: Text(
                       _numberOfStudents.toString(),
-                      style: const TextStyle(
-                        fontSize: 20,
+                      style: TextStyle(
+                        fontSize: screenWidth > 500 ? 25 : 15,
                         fontWeight: FontWeight.bold,
                         color: Colors.black,
                       ),
@@ -163,98 +169,105 @@ class _FormExampleState extends State<FormExample> {
                   ),
                 ],
               ),
-              Row(
+              Wrap(
+                spacing: 20,
+                runSpacing: 4.0,
                 children: [
                   Container(
                     margin: const EdgeInsets.only(right: 10),
                     child: Text(
                       'Choisissez Le Nombre :',
-                      style: const TextStyle(
-                        fontSize: 20,
+                      style: TextStyle(
+                        fontSize: screenWidth > 500 ? 25 : 15,
                         fontWeight: FontWeight.bold,
                         color: Colors.black,
                       ),
                     ),
                   ),
                   Container(
-                    margin: const EdgeInsets.only(right: 20),
-                    child: ElevatedButton(
-                      onPressed: () {
-                        setState(() {
-                          _numberOfStudents = 1;
-                        });
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor:
-                            const Color.fromARGB(255, 233, 234, 236),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        ElevatedButton(
+                          onPressed: () {
+                            setState(() {
+                              _numberOfStudents = 1;
+                            });
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor:
+                                const Color.fromARGB(255, 233, 234, 236),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            padding: EdgeInsets.symmetric(
+                                horizontal: screenWidth > 800 ? 30 : 25,
+                                vertical: 20),
+                          ),
+                          child: const Text(
+                            '1',
+                            style: TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.bold,
+                              color: Color.fromARGB(136, 36, 36, 36),
+                            ),
+                          ),
                         ),
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 30, vertical: 20),
-                      ),
-                      child: const Text(
-                        '1',
-                        style: TextStyle(
-                          fontSize: 15,
-                          fontWeight: FontWeight.bold,
-                          color: Color.fromARGB(136, 36, 36, 36),
+                        SizedBox(
+                            width: screenWidth * 0.01), // Space between buttons
+                        ElevatedButton(
+                          onPressed: () {
+                            setState(() {
+                              _numberOfStudents = 2;
+                            });
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor:
+                                const Color.fromARGB(255, 233, 234, 236),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            padding: EdgeInsets.symmetric(
+                                horizontal: screenWidth > 800 ? 30 : 25,
+                                vertical: 20),
+                          ),
+                          child: const Text(
+                            '2',
+                            style: TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.bold,
+                              color: Color.fromARGB(136, 36, 36, 36),
+                            ),
+                          ),
                         ),
-                      ),
-                    ),
-                  ),
-                  Container(
-                    margin: const EdgeInsets.only(right: 20),
-                    child: ElevatedButton(
-                      onPressed: () {
-                        setState(() {
-                          _numberOfStudents = 2;
-                        });
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor:
-                            const Color.fromARGB(255, 233, 234, 236),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
+                        SizedBox(
+                            width: screenWidth * 0.01), // Space between buttons
+                        ElevatedButton(
+                          onPressed: () {
+                            setState(() {
+                              _numberOfStudents = 3;
+                            });
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor:
+                                const Color.fromARGB(255, 233, 234, 236),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            padding: EdgeInsets.symmetric(
+                                horizontal: screenWidth > 800 ? 30 : 25,
+                                vertical: 20),
+                          ),
+                          child: const Text(
+                            '3',
+                            style: TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.bold,
+                              color: Color.fromARGB(136, 36, 36, 36),
+                            ),
+                          ),
                         ),
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 30, vertical: 20),
-                      ),
-                      child: const Text(
-                        '2',
-                        style: TextStyle(
-                          fontSize: 15,
-                          fontWeight: FontWeight.bold,
-                          color: Color.fromARGB(136, 36, 36, 36),
-                        ),
-                      ),
-                    ),
-                  ),
-                  Container(
-                    margin: const EdgeInsets.only(right: 20),
-                    child: ElevatedButton(
-                      onPressed: () {
-                        setState(() {
-                          _numberOfStudents = 3;
-                        });
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor:
-                            const Color.fromARGB(255, 233, 234, 236),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 30, vertical: 20),
-                      ),
-                      child: const Text(
-                        '3',
-                        style: TextStyle(
-                          fontSize: 15,
-                          fontWeight: FontWeight.bold,
-                          color: Color.fromARGB(136, 36, 36, 36),
-                        ),
-                      ),
+                      ],
                     ),
                   ),
                 ],

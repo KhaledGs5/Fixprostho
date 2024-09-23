@@ -74,13 +74,12 @@ class _VerifyScreenState extends State<VerifyScreen> {
                       ),
                       onPressed: () {
                         setState(() {
-                          _obscureText =
-                              !_obscureText; // Toggle password visibility
+                          _obscureText = !_obscureText;
                         });
                       },
                     ),
                   ),
-                  obscureText: _obscureText, // Controls whether to obscure text
+                  obscureText: _obscureText,
                   validator: (String? value) {
                     if (value == null || value.isEmpty) {
                       return 'Veuillez entrer le code';
@@ -98,12 +97,12 @@ class _VerifyScreenState extends State<VerifyScreen> {
                         borderRadius: BorderRadius.circular(10),
                       ),
                       padding: const EdgeInsets.symmetric(
-                          horizontal: 30, vertical: 20),
+                          horizontal: 25, vertical: 20),
                     ),
-                    child: const Text(
+                    child: Text(
                       'Verifier',
                       style: TextStyle(
-                        fontSize: 15,
+                        fontSize: screenWidth > 500 ? 15 : 12,
                         fontWeight: FontWeight.bold,
                         color: Color.fromARGB(136, 36, 36, 36),
                       ),

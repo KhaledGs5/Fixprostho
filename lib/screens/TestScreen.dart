@@ -341,7 +341,8 @@ class _FormExampleState extends State<FormExample> {
     bool changed = false;
     List<List<dynamic>> testsData = await readData('Tests');
     for (var elt in checkStates.entries) {
-      String currentDate = DateTime.now().toString();
+      DateTime now = DateTime.now();
+      String currentDate = '${now.day}-${now.month}-${now.year}';
       List<dynamic> updatedTestRow = [
         dataList[j],
         checkStates[elt.key].toString(),
@@ -477,193 +478,396 @@ class _FormExampleState extends State<FormExample> {
                 ),
               ),
               const SizedBox(height: 20),
-              Table(
-                columnWidths: const {
-                  0: FlexColumnWidth(2),
-                  1: FlexColumnWidth(5),
-                  2: FlexColumnWidth(3),
-                  3: FlexColumnWidth(4),
-                },
-                border: TableBorder.all(
-                  color: Colors.grey,
-                  width: 1,
+              if (screenWidth > 1000)
+                Table(
+                  columnWidths: const {
+                    0: FlexColumnWidth(2),
+                    1: FlexColumnWidth(5),
+                    2: FlexColumnWidth(3),
+                    3: FlexColumnWidth(4),
+                  },
+                  border: TableBorder.all(
+                    color: Colors.grey,
+                    width: 1,
+                  ),
+                  children: [
+                    TableRow(
+                      children: [
+                        _buildTableCell(
+                          'Date',
+                          const TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        _buildTableCell(
+                          'Intervention',
+                          const TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        _buildTableCell(
+                          'Visa de L\'enseignant',
+                          const TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        _buildTableCell(
+                          'Observation',
+                          const TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
+                    ),
+                    _buildTableRow(
+                      dateStates['examClinic'] ?? '',
+                      'Examen clinique',
+                      checkStates['examClinic'],
+                      (value) => setState(
+                          () => checkStates['examClinic'] = value ?? false),
+                      examClinic,
+                      (value) =>
+                          setState(() => obsrStates['examClinic'] = value),
+                    ),
+                    _buildTableRow(
+                      dateStates['correctionExamClinic'] ?? '',
+                      'Correction de l’examen clinique',
+                      checkStates['correctionExamClinic'],
+                      (value) => setState(() =>
+                          checkStates['correctionExamClinic'] = value ?? false),
+                      correctionExamClinic,
+                      (value) => setState(
+                          () => obsrStates['correctionExamClinic'] = value),
+                    ),
+                    _buildTableRow(
+                      dateStates['inlayCore'] ?? '',
+                      'L’empreinte directe de l’inlay core',
+                      checkStates['inlayCore'],
+                      (value) => setState(
+                          () => checkStates['inlayCore'] = value ?? false),
+                      inlayCore,
+                      (value) =>
+                          setState(() => obsrStates['inlayCore'] = value),
+                    ),
+                    _buildTableRow(
+                      dateStates['essayageInlayCore'] ?? '',
+                      'Essayage de l’inlay core',
+                      checkStates['essayageInlayCore'],
+                      (value) => setState(() =>
+                          checkStates['essayageInlayCore'] = value ?? false),
+                      essayageInlayCore,
+                      (value) => setState(
+                          () => obsrStates['essayageInlayCore'] = value),
+                    ),
+                    _buildTableRow(
+                      dateStates['scellementInlayCore'] ?? '',
+                      'Scellement de l’inlay core',
+                      checkStates['scellementInlayCore'],
+                      (value) => setState(() =>
+                          checkStates['scellementInlayCore'] = value ?? false),
+                      scellementInlayCore,
+                      (value) => setState(
+                          () => obsrStates['scellementInlayCore'] = value),
+                    ),
+                    _buildTableRow(
+                      dateStates['preparationDentsSupports'] ?? '',
+                      'Préparation des dents supports',
+                      checkStates['preparationDentsSupports'],
+                      (value) => setState(() =>
+                          checkStates['preparationDentsSupports'] =
+                              value ?? false),
+                      preparationDentsSupports,
+                      (value) => setState(
+                          () => obsrStates['preparationDentsSupports'] = value),
+                    ),
+                    _buildTableRow(
+                      dateStates['rectificationPreparations'] ?? '',
+                      'Rectification des préparations',
+                      checkStates['rectificationPreparations'],
+                      (value) => setState(() =>
+                          checkStates['rectificationPreparations'] =
+                              value ?? false),
+                      rectificationPreparations,
+                      (value) => setState(() =>
+                          obsrStates['rectificationPreparations'] = value),
+                    ),
+                    _buildTableRow(
+                      dateStates['empreinteGlobale'] ?? '',
+                      'Empreinte globale + empreinte antagoniste',
+                      checkStates['empreinteGlobale'],
+                      (value) => setState(() =>
+                          checkStates['empreinteGlobale'] = value ?? false),
+                      empreinteGlobale,
+                      (value) => setState(
+                          () => obsrStates['empreinteGlobale'] = value),
+                    ),
+                    _buildTableRow(
+                      dateStates['enregistrementOcclusion'] ?? '',
+                      'Enregistrement de l’occlusion + Montage sur articulateur',
+                      checkStates['enregistrementOcclusion'],
+                      (value) => setState(() =>
+                          checkStates['enregistrementOcclusion'] =
+                              value ?? false),
+                      enregistrementOcclusion,
+                      (value) => setState(
+                          () => obsrStates['enregistrementOcclusion'] = value),
+                    ),
+                    _buildTableRow(
+                      dateStates['detourage'] ?? '',
+                      'Détourage + traçage de la ligne de finition',
+                      checkStates['detourage'],
+                      (value) => setState(
+                          () => checkStates['detourage'] = value ?? false),
+                      detourage,
+                      (value) =>
+                          setState(() => obsrStates['detourage'] = value),
+                    ),
+                    _buildTableRow(
+                      dateStates['essayageProthese'] ?? '',
+                      'Essayage de la prothèse métallique',
+                      checkStates['essayageProthese'],
+                      (value) => setState(() =>
+                          checkStates['essayageProthese'] = value ?? false),
+                      essayageProthese,
+                      (value) => setState(
+                          () => obsrStates['essayageProthese'] = value),
+                    ),
+                    _buildTableRow(
+                      dateStates['essayageArmatureMetallique'] ?? '',
+                      'Essayage de l’armature métallique/Essayage de la chape en zircone + choix de la couleur',
+                      checkStates['essayageArmatureMetallique'],
+                      (value) => setState(() =>
+                          checkStates['essayageArmatureMetallique'] =
+                              value ?? false),
+                      essayageArmatureMetallique,
+                      (value) => setState(() =>
+                          obsrStates['essayageArmatureMetallique'] = value),
+                    ),
+                    _buildTableRow(
+                      dateStates['essayageCeramique'] ?? '',
+                      'Essayage de la céramique à l’état de biscuit/Essayage de la facette en résine',
+                      checkStates['essayageCeramique'],
+                      (value) => setState(() =>
+                          checkStates['essayageCeramique'] = value ?? false),
+                      essayageCeramique,
+                      (value) => setState(
+                          () => obsrStates['essayageCeramique'] = value),
+                    ),
+                    _buildTableRow(
+                      dateStates['scellementDefinitif'] ?? '',
+                      'Scellement définitif/Collage',
+                      checkStates['scellementDefinitif'],
+                      (value) => setState(() =>
+                          checkStates['scellementDefinitif'] = value ?? false),
+                      scellementDefinitif,
+                      (value) => setState(
+                          () => obsrStates['scellementDefinitif'] = value),
+                    ),
+                  ],
                 ),
-                children: [
-                  TableRow(
-                    children: [
-                      _buildTableCell(
-                        'Date',
-                        const TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      _buildTableCell(
-                        'Intervention',
-                        const TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      _buildTableCell(
-                        'Visa de L\'enseignant',
-                        const TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      _buildTableCell(
-                        'Observation',
-                        const TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ],
+              if (screenWidth <= 1000)
+                Table(
+                  columnWidths: const {
+                    0: FlexColumnWidth(2),
+                    1: FlexColumnWidth(6),
+                  },
+                  border: TableBorder.all(
+                    color: Colors.grey,
+                    width: 1,
                   ),
-                  _buildTableRow(
-                    dateStates['examClinic'] ?? '',
-                    'Examen clinique',
-                    checkStates['examClinic'],
-                    (value) => setState(
-                        () => checkStates['examClinic'] = value ?? false),
-                    examClinic,
-                    (value) => setState(() => obsrStates['examClinic'] = value),
-                  ),
-                  _buildTableRow(
-                    dateStates['correctionExamClinic'] ?? '',
-                    'Correction de l’examen clinique',
-                    checkStates['correctionExamClinic'],
-                    (value) => setState(() =>
-                        checkStates['correctionExamClinic'] = value ?? false),
-                    correctionExamClinic,
-                    (value) => setState(
-                        () => obsrStates['correctionExamClinic'] = value),
-                  ),
-                  _buildTableRow(
-                    dateStates['inlayCore'] ?? '',
-                    'L’empreinte directe de l’inlay core',
-                    checkStates['inlayCore'],
-                    (value) => setState(
-                        () => checkStates['inlayCore'] = value ?? false),
-                    inlayCore,
-                    (value) => setState(() => obsrStates['inlayCore'] = value),
-                  ),
-                  _buildTableRow(
-                    dateStates['essayageInlayCore'] ?? '',
-                    'Essayage de l’inlay core',
-                    checkStates['essayageInlayCore'],
-                    (value) => setState(() =>
-                        checkStates['essayageInlayCore'] = value ?? false),
-                    essayageInlayCore,
-                    (value) =>
-                        setState(() => obsrStates['essayageInlayCore'] = value),
-                  ),
-                  _buildTableRow(
-                    dateStates['scellementInlayCore'] ?? '',
-                    'Scellement de l’inlay core',
-                    checkStates['scellementInlayCore'],
-                    (value) => setState(() =>
-                        checkStates['scellementInlayCore'] = value ?? false),
-                    scellementInlayCore,
-                    (value) => setState(
-                        () => obsrStates['scellementInlayCore'] = value),
-                  ),
-                  _buildTableRow(
-                    dateStates['preparationDentsSupports'] ?? '',
-                    'Préparation des dents supports',
-                    checkStates['preparationDentsSupports'],
-                    (value) => setState(() =>
-                        checkStates['preparationDentsSupports'] =
-                            value ?? false),
-                    preparationDentsSupports,
-                    (value) => setState(
-                        () => obsrStates['preparationDentsSupports'] = value),
-                  ),
-                  _buildTableRow(
-                    dateStates['rectificationPreparations'] ?? '',
-                    'Rectification des préparations',
-                    checkStates['rectificationPreparations'],
-                    (value) => setState(() =>
-                        checkStates['rectificationPreparations'] =
-                            value ?? false),
-                    rectificationPreparations,
-                    (value) => setState(
-                        () => obsrStates['rectificationPreparations'] = value),
-                  ),
-                  _buildTableRow(
-                    dateStates['empreinteGlobale'] ?? '',
-                    'Empreinte globale + empreinte antagoniste',
-                    checkStates['empreinteGlobale'],
-                    (value) => setState(
-                        () => checkStates['empreinteGlobale'] = value ?? false),
-                    empreinteGlobale,
-                    (value) =>
-                        setState(() => obsrStates['empreinteGlobale'] = value),
-                  ),
-                  _buildTableRow(
-                    dateStates['enregistrementOcclusion'] ?? '',
-                    'Enregistrement de l’occlusion + Montage sur articulateur',
-                    checkStates['enregistrementOcclusion'],
-                    (value) => setState(() =>
-                        checkStates['enregistrementOcclusion'] =
-                            value ?? false),
-                    enregistrementOcclusion,
-                    (value) => setState(
-                        () => obsrStates['enregistrementOcclusion'] = value),
-                  ),
-                  _buildTableRow(
-                    dateStates['detourage'] ?? '',
-                    'Détourage + traçage de la ligne de finition',
-                    checkStates['detourage'],
-                    (value) => setState(
-                        () => checkStates['detourage'] = value ?? false),
-                    detourage,
-                    (value) => setState(() => obsrStates['detourage'] = value),
-                  ),
-                  _buildTableRow(
-                    dateStates['essayageProthese'] ?? '',
-                    'Essayage de la prothèse métallique',
-                    checkStates['essayageProthese'],
-                    (value) => setState(
-                        () => checkStates['essayageProthese'] = value ?? false),
-                    essayageProthese,
-                    (value) =>
-                        setState(() => obsrStates['essayageProthese'] = value),
-                  ),
-                  _buildTableRow(
-                    dateStates['essayageArmatureMetallique'] ?? '',
-                    'Essayage de l’armature métallique/Essayage de la chape en zircone + choix de la couleur',
-                    checkStates['essayageArmatureMetallique'],
-                    (value) => setState(() =>
-                        checkStates['essayageArmatureMetallique'] =
-                            value ?? false),
-                    essayageArmatureMetallique,
-                    (value) => setState(
-                        () => obsrStates['essayageArmatureMetallique'] = value),
-                  ),
-                  _buildTableRow(
-                    dateStates['essayageCeramique'] ?? '',
-                    'Essayage de la céramique à l’état de biscuit/Essayage de la facette en résine',
-                    checkStates['essayageCeramique'],
-                    (value) => setState(() =>
-                        checkStates['essayageCeramique'] = value ?? false),
-                    essayageCeramique,
-                    (value) =>
-                        setState(() => obsrStates['essayageCeramique'] = value),
-                  ),
-                  _buildTableRow(
-                    dateStates['scellementDefinitif'] ?? '',
-                    'Scellement définitif/Collage',
-                    checkStates['scellementDefinitif'],
-                    (value) => setState(() =>
-                        checkStates['scellementDefinitif'] = value ?? false),
-                    scellementDefinitif,
-                    (value) => setState(
-                        () => obsrStates['scellementDefinitif'] = value),
-                  ),
-                ],
-              ),
+                  children: [
+                    _buildTestRow(
+                      'Examen clinique',
+                      checkStates['examClinic'],
+                      (value) => setState(
+                          () => checkStates['examClinic'] = value ?? false),
+                    ),
+                    _buildDateObsrRow(
+                      dateStates['examClinic'] ?? '',
+                      examClinic,
+                      (value) =>
+                          setState(() => obsrStates['examClinic'] = value),
+                    ),
+                    _SpaceRow(),
+                    _buildTestRow(
+                      'Correction de l’examen clinique',
+                      checkStates['correctionExamClinic'],
+                      (value) => setState(() =>
+                          checkStates['correctionExamClinic'] = value ?? false),
+                    ),
+                    _buildDateObsrRow(
+                      dateStates['correctionExamClinic'] ?? '',
+                      correctionExamClinic,
+                      (value) => setState(
+                          () => obsrStates['correctionExamClinic'] = value),
+                    ),
+                    _SpaceRow(),
+                    _buildTestRow(
+                      'L’empreinte directe de l’inlay core',
+                      checkStates['inlayCore'],
+                      (value) => setState(
+                          () => checkStates['inlayCore'] = value ?? false),
+                    ),
+                    _buildDateObsrRow(
+                      dateStates['inlayCore'] ?? '',
+                      inlayCore,
+                      (value) =>
+                          setState(() => obsrStates['inlayCore'] = value),
+                    ),
+                    _SpaceRow(),
+                    _buildTestRow(
+                      'Essayage de l’inlay core',
+                      checkStates['essayageInlayCore'],
+                      (value) => setState(() =>
+                          checkStates['essayageInlayCore'] = value ?? false),
+                    ),
+                    _buildDateObsrRow(
+                      dateStates['essayageInlayCore'] ?? '',
+                      essayageInlayCore,
+                      (value) => setState(
+                          () => obsrStates['essayageInlayCore'] = value),
+                    ),
+                    _SpaceRow(),
+                    _buildTestRow(
+                      'Scellement de l’inlay core',
+                      checkStates['scellementInlayCore'],
+                      (value) => setState(() =>
+                          checkStates['scellementInlayCore'] = value ?? false),
+                    ),
+                    _buildDateObsrRow(
+                      dateStates['scellementInlayCore'] ?? '',
+                      scellementInlayCore,
+                      (value) => setState(
+                          () => obsrStates['scellementInlayCore'] = value),
+                    ),
+                    _SpaceRow(),
+                    _buildTestRow(
+                      'Préparation des dents supports',
+                      checkStates['preparationDentsSupports'],
+                      (value) => setState(() =>
+                          checkStates['preparationDentsSupports'] =
+                              value ?? false),
+                    ),
+                    _buildDateObsrRow(
+                      dateStates['preparationDentsSupports'] ?? '',
+                      preparationDentsSupports,
+                      (value) => setState(
+                          () => obsrStates['preparationDentsSupports'] = value),
+                    ),
+                    _SpaceRow(),
+                    _buildTestRow(
+                      'Rectification des préparations',
+                      checkStates['rectificationPreparations'],
+                      (value) => setState(() =>
+                          checkStates['rectificationPreparations'] =
+                              value ?? false),
+                    ),
+                    _buildDateObsrRow(
+                      dateStates['rectificationPreparations'] ?? '',
+                      rectificationPreparations,
+                      (value) => setState(() =>
+                          obsrStates['rectificationPreparations'] = value),
+                    ),
+                    _SpaceRow(),
+                    _buildTestRow(
+                      'Empreinte globale + empreinte antagoniste',
+                      checkStates['empreinteGlobale'],
+                      (value) => setState(() =>
+                          checkStates['empreinteGlobale'] = value ?? false),
+                    ),
+                    _buildDateObsrRow(
+                      dateStates['empreinteGlobale'] ?? '',
+                      empreinteGlobale,
+                      (value) => setState(
+                          () => obsrStates['empreinteGlobale'] = value),
+                    ),
+                    _SpaceRow(),
+                    _buildTestRow(
+                      'Enregistrement de l’occlusion + Montage sur articulateur',
+                      checkStates['enregistrementOcclusion'],
+                      (value) => setState(() =>
+                          checkStates['enregistrementOcclusion'] =
+                              value ?? false),
+                    ),
+                    _buildDateObsrRow(
+                      dateStates['enregistrementOcclusion'] ?? '',
+                      enregistrementOcclusion,
+                      (value) => setState(
+                          () => obsrStates['enregistrementOcclusion'] = value),
+                    ),
+                    _SpaceRow(),
+                    _buildTestRow(
+                      'Détourage + traçage de la ligne de finition',
+                      checkStates['detourage'],
+                      (value) => setState(
+                          () => checkStates['detourage'] = value ?? false),
+                    ),
+                    _buildDateObsrRow(
+                      dateStates['detourage'] ?? '',
+                      detourage,
+                      (value) =>
+                          setState(() => obsrStates['detourage'] = value),
+                    ),
+                    _SpaceRow(),
+                    _buildTestRow(
+                      'Essayage de la prothèse métallique',
+                      checkStates['essayageProthese'],
+                      (value) => setState(() =>
+                          checkStates['essayageProthese'] = value ?? false),
+                    ),
+                    _buildDateObsrRow(
+                      dateStates['essayageProthese'] ?? '',
+                      essayageProthese,
+                      (value) => setState(
+                          () => obsrStates['essayageProthese'] = value),
+                    ),
+                    _SpaceRow(),
+                    _buildTestRow(
+                      'Essayage de l’armature métallique/Essayage de la chape en zircone + choix de la couleur',
+                      checkStates['essayageArmatureMetallique'],
+                      (value) => setState(() =>
+                          checkStates['essayageArmatureMetallique'] =
+                              value ?? false),
+                    ),
+                    _buildDateObsrRow(
+                      dateStates['essayageArmatureMetallique'] ?? '',
+                      essayageArmatureMetallique,
+                      (value) => setState(() =>
+                          obsrStates['essayageArmatureMetallique'] = value),
+                    ),
+                    _SpaceRow(),
+                    _buildTestRow(
+                      'Essayage de la céramique à l’état de biscuit/Essayage de la facette en résine',
+                      checkStates['essayageCeramique'],
+                      (value) => setState(() =>
+                          checkStates['essayageCeramique'] = value ?? false),
+                    ),
+                    _buildDateObsrRow(
+                      dateStates['essayageCeramique'] ?? '',
+                      essayageCeramique,
+                      (value) => setState(
+                          () => obsrStates['essayageCeramique'] = value),
+                    ),
+                    _SpaceRow(),
+                    _buildTestRow(
+                      'Scellement définitif/Collage',
+                      checkStates['scellementDefinitif'],
+                      (value) => setState(() =>
+                          checkStates['scellementDefinitif'] = value ?? false),
+                    ),
+                    _buildDateObsrRow(
+                      dateStates['scellementDefinitif'] ?? '',
+                      scellementDefinitif,
+                      (value) => setState(
+                          () => obsrStates['scellementDefinitif'] = value),
+                    ),
+                    _SpaceRow(),
+                  ],
+                ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -745,9 +949,14 @@ class _FormExampleState extends State<FormExample> {
             fontSize: 16,
           ),
         ),
-        Checkbox(
-          value: value,
-          onChanged: onChanged,
+        Container(
+          height: 45,
+          child: Center(
+            child: Checkbox(
+              value: value,
+              onChanged: onChanged,
+            ),
+          ),
         ),
         TextFormField(
           onChanged: obsrChange,
@@ -763,6 +972,75 @@ class _FormExampleState extends State<FormExample> {
             }
             return null;
           },
+        ),
+      ],
+    );
+  }
+
+  TableRow _buildTestRow(
+      String label, bool? value, ValueChanged<bool?> onChanged) {
+    return TableRow(
+      children: [
+        Container(
+          height: 40,
+          child: Center(
+            child: Checkbox(
+              value: value,
+              onChanged: onChanged,
+            ),
+          ),
+        ),
+        _buildTableCell(
+          label,
+          const TextStyle(
+            fontSize: 16,
+          ),
+        ),
+      ],
+    );
+  }
+
+  TableRow _buildDateObsrRow(
+      String date,
+      TextEditingController observationController,
+      ValueChanged<String> obsrChange) {
+    return TableRow(
+      children: [
+        _buildTableCell(
+          date,
+          const TextStyle(
+            fontSize: 16,
+          ),
+        ),
+        TextFormField(
+          onChanged: obsrChange,
+          controller: observationController,
+          decoration: const InputDecoration(
+            contentPadding: EdgeInsets.all(10),
+            hintText: 'Observation',
+            border: InputBorder.none,
+          ),
+          validator: (String? value) {
+            if (value == null || value.isEmpty) {
+              return 'Veuillez remplir !!';
+            }
+            return null;
+          },
+        ),
+      ],
+    );
+  }
+
+  TableRow _SpaceRow() {
+    return TableRow(
+      children: [
+        Container(
+          height: 5,
+          color: Colors.grey,
+        ),
+        Container(
+          height: 5,
+          color: Colors.grey,
         ),
       ],
     );

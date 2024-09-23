@@ -5,20 +5,26 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    double screenWidth = MediaQuery.of(context).size.width;
+    double screenHeight = MediaQuery.of(context).size.height;
+
     return Scaffold(
-        appBar: AppBar(title: Text('Fixprostho')),
-        body: Center(
-          child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+      appBar: AppBar(title: Text('Fixprostho')),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
             Container(
-              margin: const EdgeInsets.only(bottom: 20),
+              margin: EdgeInsets.only(bottom: screenHeight * 0.03),
               child: ElevatedButton(
                 onPressed: () {
                   Navigator.pushNamed(context, '/groups');
                 },
-                child: const Text(
+                child: Text(
                   'Afficher les groupes',
                   style: TextStyle(
                     color: Colors.white60,
+                    fontSize: 15,
                   ),
                 ),
                 style: ElevatedButton.styleFrom(
@@ -26,21 +32,24 @@ class HomeScreen extends StatelessWidget {
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10),
                   ),
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 30, vertical: 20),
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 20,
+                    vertical: 20,
+                  ),
                 ),
               ),
             ),
             Container(
-              margin: const EdgeInsets.only(bottom: 20),
+              margin: EdgeInsets.only(bottom: screenHeight * 0.03),
               child: ElevatedButton(
                 onPressed: () {
                   Navigator.pushNamed(context, '/add');
                 },
-                child: const Text(
+                child: Text(
                   'Ajouter un nouveau binôme',
                   style: TextStyle(
-                    color: Color.fromARGB(153, 17, 17, 17),
+                    color: const Color.fromARGB(153, 17, 17, 17),
+                    fontSize: 15,
                   ),
                 ),
                 style: ElevatedButton.styleFrom(
@@ -48,8 +57,10 @@ class HomeScreen extends StatelessWidget {
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10),
                   ),
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 30, vertical: 20),
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 20,
+                    vertical: 20,
+                  ),
                 ),
               ),
             ),
@@ -58,10 +69,11 @@ class HomeScreen extends StatelessWidget {
                 onPressed: () {
                   Navigator.pushNamed(context, '/valid');
                 },
-                child: const Text(
+                child: Text(
                   'Validation',
                   style: TextStyle(
-                    color: Color.fromARGB(255, 235, 235, 235),
+                    color: const Color.fromARGB(255, 235, 235, 235),
+                    fontSize: 15,
                   ),
                 ),
                 style: ElevatedButton.styleFrom(
@@ -69,12 +81,13 @@ class HomeScreen extends StatelessWidget {
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10),
                   ),
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 30, vertical: 20),
+                  padding: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
                 ),
               ),
             ),
-          ]),
-        ));
+          ],
+        ),
+      ),
+    );
   }
 }
