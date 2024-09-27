@@ -128,11 +128,6 @@ class _FormExampleState extends State<FormExample> {
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
-    double screenHeight = MediaQuery.of(context).size.height;
-
-    double buttonPadding = screenWidth * 0.05;
-    double buttonFontSize = screenWidth * 0.02;
-    double textFontSize = screenWidth * 0.04;
 
     return Center(
       child: Container(

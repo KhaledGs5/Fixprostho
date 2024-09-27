@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:csv/csv.dart';
+import 'package:pdf/widgets.dart' as pw;
 import 'package:path_provider/path_provider.dart';
+import 'package:file_picker/file_picker.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'dart:io';
 
 class TestScreen extends StatelessWidget {
@@ -373,6 +376,499 @@ class _FormExampleState extends State<FormExample> {
         const SnackBar(content: Text('Données Enregistrées')),
       );
       didChangeDependencies();
+    }
+  }
+
+  Future<void> generatePDF() async {
+    final pdf = pw.Document();
+    List<List<dynamic>> studentsData = await readData('Students');
+    String Student1 = "";
+    String Student2 = "";
+    String Student3 = "";
+    int Grp = 0;
+    int BiNum = 0;
+    for (var row in studentsData) {
+      if (row[0] == binomeId) {
+        Student1 = row[1];
+        Student2 = row[2] == 'null' ? "" : row[2];
+        Student3 = row[3] == 'null' ? "" : row[3];
+        Grp = row[4];
+        BiNum = row[6];
+      }
+    }
+    pdf.addPage(
+      pw.Page(
+        build: (pw.Context context) => pw.Column(
+          children: [
+            pw.Center(
+              child: pw.Text(
+                'Test',
+                style:
+                    pw.TextStyle(fontSize: 25, fontWeight: pw.FontWeight.bold),
+              ),
+            ),
+            pw.SizedBox(height: 20),
+            pw.Align(
+              alignment: pw.Alignment.centerLeft,
+              child: pw.Text(
+                'Binome : ${Student1} ${Student2 == "" ? "" : ','} ${Student2} ${Student3 == "" ? "" : ','} ${Student3}  (B${BiNum}G${Grp})',
+                style: pw.TextStyle(fontSize: 15),
+              ),
+            ),
+            pw.SizedBox(height: 10),
+            pw.Align(
+              alignment: pw.Alignment.centerLeft,
+              child: pw.Text(
+                'Cas numéro : ${casenumber}',
+                style:
+                    pw.TextStyle(fontSize: 18, fontWeight: pw.FontWeight.bold),
+              ),
+            ),
+            pw.SizedBox(height: 12),
+            pw.Align(
+              alignment: pw.Alignment.centerLeft,
+              child: pw.Text(
+                'Informations du patient :',
+                style:
+                    pw.TextStyle(fontSize: 15, fontWeight: pw.FontWeight.bold),
+              ),
+            ),
+            pw.SizedBox(height: 10),
+            pw.Padding(
+              padding: pw.EdgeInsets.only(
+                  left: 20), // add 20-point margin to the left
+              child: pw.Align(
+                alignment: pw.Alignment.centerLeft,
+                child: pw.Text(
+                  'Nom et Prénom du patient : ${_patientNameController.text}',
+                  style: pw.TextStyle(fontSize: 15),
+                ),
+              ),
+            ),
+            pw.SizedBox(height: 8),
+            pw.Padding(
+              padding: pw.EdgeInsets.only(
+                  left: 20), // add 20-point margin to the left
+              child: pw.Align(
+                alignment: pw.Alignment.centerLeft,
+                child: pw.Text(
+                  'N°FC : ${_NFCController.text}',
+                  style: pw.TextStyle(fontSize: 15),
+                ),
+              ),
+            ),
+            pw.SizedBox(height: 8),
+            pw.Padding(
+              padding: pw.EdgeInsets.only(
+                  left: 20), // add 20-point margin to the left
+              child: pw.Align(
+                alignment: pw.Alignment.centerLeft,
+                child: pw.Text(
+                  'Décision prothétique : ${_DecisionController.text}',
+                  style: pw.TextStyle(fontSize: 15),
+                ),
+              ),
+            ),
+            pw.SizedBox(height: 10),
+            pw.Align(
+              alignment: pw.Alignment.centerLeft,
+              child: pw.Text(
+                'Informations du test :',
+                style:
+                    pw.TextStyle(fontSize: 15, fontWeight: pw.FontWeight.bold),
+              ),
+            ),
+            pw.SizedBox(height: 10),
+            pw.Table(
+              border: pw.TableBorder.all(),
+              columnWidths: {
+                0: pw.FixedColumnWidth(150),
+                1: pw.FixedColumnWidth(400),
+                2: pw.FixedColumnWidth(280),
+                3: pw.FixedColumnWidth(300),
+              },
+              children: [
+                pw.TableRow(
+                  children: [
+                    pw.Padding(
+                      padding: pw.EdgeInsets.all(2),
+                      child: pw.Text('Date'),
+                    ),
+                    pw.Padding(
+                      padding: pw.EdgeInsets.all(2),
+                      child: pw.Text('Intervention'),
+                    ),
+                    pw.Padding(
+                      padding: pw.EdgeInsets.all(2),
+                      child: pw.Text('Visa de L\'enseignant'),
+                    ),
+                    pw.Padding(
+                      padding: pw.EdgeInsets.all(2),
+                      child: pw.Text('Observation'),
+                    ),
+                  ],
+                ),
+                pw.TableRow(
+                  children: [
+                    pw.Padding(
+                      padding: pw.EdgeInsets.all(2),
+                      child: pw.Text('${dateStates['examClinic'] ?? ''}'),
+                    ),
+                    pw.Padding(
+                      padding: pw.EdgeInsets.all(2),
+                      child: pw.Text('Examen clinique'),
+                    ),
+                    pw.Padding(
+                      padding: pw.EdgeInsets.all(2),
+                      child: pw.Text(
+                          '${checkStates['examClinic'] == true ? 'Validé' : 'Not Validé'}'),
+                    ),
+                    pw.Padding(
+                      padding: pw.EdgeInsets.all(2),
+                      child: pw.Text('${obsrStates["examClinic"]}'),
+                    ),
+                  ],
+                ),
+                pw.TableRow(
+                  children: [
+                    pw.Padding(
+                      padding: pw.EdgeInsets.all(2),
+                      child: pw.Text(
+                          '${dateStates['correctionExamClinic'] ?? ''}'),
+                    ),
+                    pw.Padding(
+                      padding: pw.EdgeInsets.all(2),
+                      child: pw.Text('Correction de l\'examen clinique'),
+                    ),
+                    pw.Padding(
+                      padding: pw.EdgeInsets.all(2),
+                      child: pw.Text(
+                          '${checkStates['correctionExamClinic'] == true ? 'Validé' : 'Not Validé'}'),
+                    ),
+                    pw.Padding(
+                      padding: pw.EdgeInsets.all(2),
+                      child: pw.Text('${obsrStates["correctionExamClinic"]}'),
+                    ),
+                  ],
+                ),
+                pw.TableRow(
+                  children: [
+                    pw.Padding(
+                      padding: pw.EdgeInsets.all(2),
+                      child: pw.Text('${dateStates['inlayCore'] ?? ''}'),
+                    ),
+                    pw.Padding(
+                      padding: pw.EdgeInsets.all(2),
+                      child: pw.Text('L\'empreinte directe de l\'inlay core'),
+                    ),
+                    pw.Padding(
+                      padding: pw.EdgeInsets.all(2),
+                      child: pw.Text(
+                          '${checkStates['inlayCore'] == true ? 'Validé' : 'Not Validé'}'),
+                    ),
+                    pw.Padding(
+                      padding: pw.EdgeInsets.all(2),
+                      child: pw.Text('${obsrStates["inlayCore"]}'),
+                    ),
+                  ],
+                ),
+                pw.TableRow(
+                  children: [
+                    pw.Padding(
+                      padding: pw.EdgeInsets.all(2),
+                      child:
+                          pw.Text('${dateStates['essayageInlayCore'] ?? ''}'),
+                    ),
+                    pw.Padding(
+                      padding: pw.EdgeInsets.all(2),
+                      child: pw.Text('Essayage de l\'inlay core'),
+                    ),
+                    pw.Padding(
+                      padding: pw.EdgeInsets.all(2),
+                      child: pw.Text(
+                          '${checkStates['essayageInlayCore'] == true ? 'Validé' : 'Not Validé'}'),
+                    ),
+                    pw.Padding(
+                      padding: pw.EdgeInsets.all(2),
+                      child: pw.Text('${obsrStates["essayageInlayCore"]}'),
+                    ),
+                  ],
+                ),
+                pw.TableRow(
+                  children: [
+                    pw.Padding(
+                      padding: pw.EdgeInsets.all(2),
+                      child:
+                          pw.Text('${dateStates['scellementInlayCore'] ?? ''}'),
+                    ),
+                    pw.Padding(
+                      padding: pw.EdgeInsets.all(2),
+                      child: pw.Text('Scellement de l\'inlay core'),
+                    ),
+                    pw.Padding(
+                      padding: pw.EdgeInsets.all(2),
+                      child: pw.Text(
+                          '${checkStates['scellementInlayCore'] == true ? 'Validé' : 'Not Validé'}'),
+                    ),
+                    pw.Padding(
+                      padding: pw.EdgeInsets.all(2),
+                      child: pw.Text('${obsrStates["scellementInlayCore"]}'),
+                    ),
+                  ],
+                ),
+                pw.TableRow(
+                  children: [
+                    pw.Padding(
+                      padding: pw.EdgeInsets.all(2),
+                      child: pw.Text(
+                          '${dateStates['preparationDentsSupports'] ?? ''}'),
+                    ),
+                    pw.Padding(
+                      padding: pw.EdgeInsets.all(2),
+                      child: pw.Text('Préparation des dents supports'),
+                    ),
+                    pw.Padding(
+                      padding: pw.EdgeInsets.all(2),
+                      child: pw.Text(
+                          '${checkStates['preparationDentsSupports'] == true ? 'Validé' : 'Not Validé'}'),
+                    ),
+                    pw.Padding(
+                      padding: pw.EdgeInsets.all(2),
+                      child:
+                          pw.Text('${obsrStates["preparationDentsSupports"]}'),
+                    ),
+                  ],
+                ),
+                pw.TableRow(
+                  children: [
+                    pw.Padding(
+                      padding: pw.EdgeInsets.all(2),
+                      child: pw.Text(
+                          '${dateStates['rectificationPreparations'] ?? ''}'),
+                    ),
+                    pw.Padding(
+                      padding: pw.EdgeInsets.all(2),
+                      child: pw.Text('Rectification des préparations'),
+                    ),
+                    pw.Padding(
+                      padding: pw.EdgeInsets.all(2),
+                      child: pw.Text(
+                          '${checkStates['rectificationPreparations'] == true ? 'Validé' : 'Not Validé'}'),
+                    ),
+                    pw.Padding(
+                      padding: pw.EdgeInsets.all(2),
+                      child:
+                          pw.Text('${obsrStates["rectificationPreparations"]}'),
+                    ),
+                  ],
+                ),
+                pw.TableRow(
+                  children: [
+                    pw.Padding(
+                      padding: pw.EdgeInsets.all(2),
+                      child: pw.Text('${dateStates['empreinteGlobale'] ?? ''}'),
+                    ),
+                    pw.Padding(
+                      padding: pw.EdgeInsets.all(2),
+                      child:
+                          pw.Text('Empreinte globale + empreinte antagoniste'),
+                    ),
+                    pw.Padding(
+                      padding: pw.EdgeInsets.all(2),
+                      child: pw.Text(
+                          '${checkStates['empreinteGlobale'] == true ? 'Validé' : 'Not Validé'}'),
+                    ),
+                    pw.Padding(
+                      padding: pw.EdgeInsets.all(2),
+                      child: pw.Text('${obsrStates["empreinteGlobale"]}'),
+                    ),
+                  ],
+                ),
+                pw.TableRow(
+                  children: [
+                    pw.Padding(
+                      padding: pw.EdgeInsets.all(2),
+                      child: pw.Text(
+                          '${dateStates['enregistrementOcclusion'] ?? ''}'),
+                    ),
+                    pw.Padding(
+                      padding: pw.EdgeInsets.all(2),
+                      child: pw.Text(
+                          'Enregistrement de l\'occlusion + Montage sur articulateur'),
+                    ),
+                    pw.Padding(
+                      padding: pw.EdgeInsets.all(2),
+                      child: pw.Text(
+                          '${checkStates['enregistrementOcclusion'] == true ? 'Validé' : 'Not Validé'}'),
+                    ),
+                    pw.Padding(
+                      padding: pw.EdgeInsets.all(2),
+                      child:
+                          pw.Text('${obsrStates["enregistrementOcclusion"]}'),
+                    ),
+                  ],
+                ),
+                pw.TableRow(
+                  children: [
+                    pw.Padding(
+                      padding: pw.EdgeInsets.all(2),
+                      child: pw.Text('${dateStates['detourage'] ?? ''}'),
+                    ),
+                    pw.Padding(
+                      padding: pw.EdgeInsets.all(2),
+                      child: pw.Text(
+                          'Détourage + traçage de la ligne de finition'),
+                    ),
+                    pw.Padding(
+                      padding: pw.EdgeInsets.all(2),
+                      child: pw.Text(
+                          '${checkStates['detourage'] == true ? 'Validé' : 'Not Validé'}'),
+                    ),
+                    pw.Padding(
+                      padding: pw.EdgeInsets.all(2),
+                      child: pw.Text('${obsrStates["detourage"]}'),
+                    ),
+                  ],
+                ),
+                pw.TableRow(
+                  children: [
+                    pw.Padding(
+                      padding: pw.EdgeInsets.all(2),
+                      child: pw.Text('${dateStates['essayageProthese'] ?? ''}'),
+                    ),
+                    pw.Padding(
+                      padding: pw.EdgeInsets.all(2),
+                      child: pw.Text('Essayage de la prothèse métallique'),
+                    ),
+                    pw.Padding(
+                      padding: pw.EdgeInsets.all(2),
+                      child: pw.Text(
+                          '${checkStates['essayageProthese'] == true ? 'Validé' : 'Not Validé'}'),
+                    ),
+                    pw.Padding(
+                      padding: pw.EdgeInsets.all(2),
+                      child: pw.Text('${obsrStates["essayageProthese"]}'),
+                    ),
+                  ],
+                ),
+                pw.TableRow(
+                  children: [
+                    pw.Padding(
+                      padding: pw.EdgeInsets.all(2),
+                      child: pw.Text(
+                          '${dateStates['essayageArmatureMetallique'] ?? ''}'),
+                    ),
+                    pw.Padding(
+                      padding: pw.EdgeInsets.all(2),
+                      child: pw.Text(
+                          'Essayage de l\'armature métallique / Essayage de la chape en zircone + choix de la couleur'),
+                    ),
+                    pw.Padding(
+                      padding: pw.EdgeInsets.all(2),
+                      child: pw.Text(
+                          '${checkStates['essayageArmatureMetallique'] == true ? 'Validé' : 'Not Validé'}'),
+                    ),
+                    pw.Padding(
+                      padding: pw.EdgeInsets.all(2),
+                      child: pw.Text(
+                          '${obsrStates["essayageArmatureMetallique"]}'),
+                    ),
+                  ],
+                ),
+                pw.TableRow(
+                  children: [
+                    pw.Padding(
+                      padding: pw.EdgeInsets.all(2),
+                      child:
+                          pw.Text('${dateStates['essayageCeramique'] ?? ''}'),
+                    ),
+                    pw.Padding(
+                      padding: pw.EdgeInsets.all(2),
+                      child: pw.Text(
+                          'Essayage de la céramique à l\'état de biscuit / Essayage de la facette en résine'),
+                    ),
+                    pw.Padding(
+                      padding: pw.EdgeInsets.all(2),
+                      child: pw.Text(
+                          '${checkStates['essayageCeramique'] == true ? 'Validé' : 'Not Validé'}'),
+                    ),
+                    pw.Padding(
+                      padding: pw.EdgeInsets.all(2),
+                      child: pw.Text('${obsrStates["essayageCeramique"]}'),
+                    ),
+                  ],
+                ),
+                pw.TableRow(
+                  children: [
+                    pw.Padding(
+                      padding: pw.EdgeInsets.all(2),
+                      child:
+                          pw.Text('${dateStates['scellementDefinitif'] ?? ''}'),
+                    ),
+                    pw.Padding(
+                      padding: pw.EdgeInsets.all(2),
+                      child: pw.Text('Scellement définitif / Collage'),
+                    ),
+                    pw.Padding(
+                      padding: pw.EdgeInsets.all(2),
+                      child: pw.Text(
+                          '${checkStates['scellementDefinitif'] == true ? 'Validé' : 'Not Validé'}'),
+                    ),
+                    pw.Padding(
+                      padding: pw.EdgeInsets.all(2),
+                      child: pw.Text('${obsrStates["scellementDefinitif"]}'),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+            pw.SizedBox(height: 18),
+            pw.Text(
+              'Résultat du cas :  ${checkStates["scellementDefinitif"] == true ? 'Validé' : 'Not Validé'}',
+              style: pw.TextStyle(fontSize: 18, fontWeight: pw.FontWeight.bold),
+            ),
+            pw.SizedBox(height: 10),
+          ],
+        ),
+      ),
+    );
+
+    var status = await Permission.storage.status;
+    if (Platform.isAndroid) {
+      await Permission.manageExternalStorage.request();
+    } else {
+      await Permission.storage.request();
+    }
+    if (status.isGranted) {
+      String pdfname = 'B${BiNum}G${Grp}C${casenumber}';
+      String _selectedDirectory = "";
+
+      final directory = await FilePicker.platform.getDirectoryPath();
+      if (directory != null) {
+        setState(() {
+          _selectedDirectory = directory;
+        });
+      }
+
+      if (_selectedDirectory.isNotEmpty) {
+        final path = "${_selectedDirectory}/${pdfname}.pdf";
+        final file = File(path);
+
+        await file.writeAsBytes(await pdf.save());
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('PDF saved to: $path')),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('No directory selected')),
+        );
+      }
+    } else {
+      await Permission.storage.request();
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Storage permission denied')),
+      );
     }
   }
 
@@ -892,7 +1388,7 @@ class _FormExampleState extends State<FormExample> {
                     padding: const EdgeInsets.symmetric(vertical: 16.0),
                     child: Center(
                       child: ElevatedButton(
-                        onPressed: _changeData,
+                        onPressed: generatePDF,
                         child: const Text(
                           'PDF',
                           style: TextStyle(
