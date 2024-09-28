@@ -1371,13 +1371,22 @@ class _FormExampleState extends State<FormExample> {
                     padding: const EdgeInsets.symmetric(vertical: 16.0),
                     child: Center(
                       child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor:
+                              const Color.fromARGB(255, 222, 223, 225),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(15),
+                          ),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 30, vertical: 20),
+                        ),
                         onPressed: _changeData,
                         child: const Text(
                           'Soumettre',
                           style: TextStyle(
                             fontSize: 12,
                             fontWeight: FontWeight.bold,
-                            color: Color.fromARGB(255, 0, 0, 0),
+                            color: const Color.fromARGB(255, 48, 89, 139),
                           ),
                         ),
                       ),
@@ -1388,13 +1397,22 @@ class _FormExampleState extends State<FormExample> {
                     padding: const EdgeInsets.symmetric(vertical: 16.0),
                     child: Center(
                       child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor:
+                              const Color.fromARGB(255, 222, 223, 225),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(15),
+                          ),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 30, vertical: 20),
+                        ),
                         onPressed: generatePDF,
                         child: const Text(
                           'PDF',
                           style: TextStyle(
                             fontSize: 12,
                             fontWeight: FontWeight.bold,
-                            color: Color.fromARGB(255, 0, 0, 0),
+                            color: const Color.fromARGB(255, 48, 89, 139),
                           ),
                         ),
                       ),

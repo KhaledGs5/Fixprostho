@@ -4,14 +4,14 @@ import 'dart:convert';
 import 'package:csv/csv.dart';
 import 'package:path_provider/path_provider.dart';
 
-class AddScreen extends StatelessWidget {
-  const AddScreen({super.key});
+class ModifyScreen extends StatelessWidget {
+  const ModifyScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Ajouter un nouveau binôme'),
+        title: const Text('Modifier binôme'),
       ),
       body: Stack(
         children: [
@@ -44,42 +44,48 @@ class _FormExampleState extends State<FormExample> {
   final TextEditingController _Name3Controller = TextEditingController();
   int? _selectedGroup;
   int? _numberOfStudents = 2;
+  late int binomId;
 
-  Future<void> addData(List<dynamic> newData) async {
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final Map arguments = ModalRoute.of(context)!.settings.arguments as Map;
+    binomId = arguments['BinomeId'];
+    fetchData(binomId);
+  }
+
+  Future<void> updateData(
+    int rowIndex,
+    List<dynamic> updatedData,
+  ) async {
     try {
       final directory = await getApplicationDocumentsDirectory();
       final path = '${directory.path}/Students.csv';
       final file = File(path);
 
-      List<List<dynamic>> rows = [];
-      int newId = 1;
+      if (!await file.exists()) return;
 
-      if (await file.exists()) {
-        final input = file.openRead();
-        rows = await input
-            .transform(utf8.decoder)
-            .transform(CsvToListConverter())
-            .toList();
+      final input = file.openRead();
+      List<List<dynamic>> rows = await input
+          .transform(utf8.decoder)
+          .transform(CsvToListConverter())
+          .toList();
+      print(rows.length);
+      if (rowIndex < rows.length) {
+        final id = rows[rowIndex][0];
+        updatedData.insert(0, id);
 
-        if (rows.isNotEmpty) {
-          final lastRow = rows.last;
-          newId = int.tryParse(lastRow.first.toString())! + 1;
-        }
+        rows[rowIndex] = updatedData;
+
+        String csvData = const ListToCsvConverter().convert(rows);
+        await file.writeAsString(csvData);
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Modifié avec succès!')),
+        );
       }
-
-      newData.insert(0, newId.toString());
-      rows.add(newData);
-
-      String csvData = const ListToCsvConverter().convert(rows);
-      await file.writeAsString(csvData);
-
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Ajouté avec succès!')),
-      );
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Échec de l\'ajout: $e')),
-      );
+      print('An error occurred while updating the data: $e');
     }
   }
 
@@ -98,49 +104,68 @@ class _FormExampleState extends State<FormExample> {
     return fields;
   }
 
-  Future<void> _submitData() async {
+  Future<void> fetchData(int binomeID) async {
     List<List<dynamic>> studentsData = await readData();
-    int bnum = 1;
+    for (var row in studentsData) {
+      if (row[0] == binomeID) {
+        _Name1Controller.text = row[1];
+        _Name2Controller.text = row[2];
+        _Name3Controller.text = row[3];
+      }
+    }
+  }
+
+  Future<void> _submitData(int binomeID) async {
+    List<List<dynamic>> studentsData = await readData();
     String Code = "";
+    int binnum = 0;
+    String result = 'false';
+    for (var row in studentsData) {
+      if (row[0] == binomeID) {
+        result = row[5];
+        binnum = row[6];
+      }
+    }
+    ;
 
     if (_formKey.currentState!.validate()) {
       String name1 = _Name1Controller.text;
       String? name2 = _numberOfStudents! > 1 ? _Name2Controller.text : null;
       String? name3 = _numberOfStudents! > 2 ? _Name3Controller.text : null;
       int group = _selectedGroup!;
-      for (var studentData in studentsData) {
-        if (studentData[4] == group) {
-          bnum++;
-        }
-      }
+      print('Group value: $group');
       if (group == 1) {
         Code = "Grp1";
       } else if (group == 2) {
         Code = "Grp2";
       } else if (group == 3) {
         Code = "Grp3";
-      } else {
-        Code = "";
       }
-      int binomenumber = bnum;
-      
+
       List<dynamic> newData = [
         name1,
         name2 ?? 'null',
         name3 ?? 'null',
         group,
-        false,
-        binomenumber,
+        result,
+        binnum,
         Code,
       ];
-      await addData(newData);
+
+      await updateData(binomeID - 1, newData);
+      Navigator.pushNamed(
+        context,
+        '/students',
+        arguments: group,
+      );
     }
   }
 
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
-
+    final Map arguments = ModalRoute.of(context)!.settings.arguments as Map;
+    final int binomeId = arguments['BinomeId'];
     return Center(
       child: Container(
         width: screenWidth * 0.7,
@@ -320,7 +345,7 @@ class _FormExampleState extends State<FormExample> {
               DropdownButton<int>(
                 hint: const Text('Choisissez le groupe'),
                 value: _selectedGroup,
-                onChanged: (int? newValue) {
+                onChanged: (newValue) {
                   setState(() {
                     _selectedGroup = newValue;
                   });
@@ -335,7 +360,9 @@ class _FormExampleState extends State<FormExample> {
               Container(
                 margin: const EdgeInsets.only(top: 20),
                 child: ElevatedButton(
-                  onPressed: _selectedGroup != null ? _submitData : null,
+                  onPressed: _selectedGroup != null
+                      ? () => _submitData(binomeId)
+                      : null,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color.fromARGB(255, 222, 223, 225),
                     shape: RoundedRectangleBorder(
@@ -345,7 +372,7 @@ class _FormExampleState extends State<FormExample> {
                         horizontal: 30, vertical: 20),
                   ),
                   child: const Text(
-                    'Ajouter',
+                    'Modifier',
                     style: TextStyle(
                       fontSize: 15,
                       fontWeight: FontWeight.bold,

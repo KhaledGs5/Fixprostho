@@ -13,7 +13,7 @@ class VerifyScreen extends StatefulWidget {
 
 class _VerifyScreenState extends State<VerifyScreen> {
   final TextEditingController _VerfController = TextEditingController();
-  bool _obscureText = true; // To control the password visibility
+  bool _obscureText = true;
 
   Future<List<List<dynamic>>> readData() async {
     final directory = await getApplicationDocumentsDirectory();
@@ -33,19 +33,24 @@ class _VerifyScreenState extends State<VerifyScreen> {
   void _submitData(BuildContext context, int grpnumber) async {
     List<List<dynamic>> studentsData = await readData();
 
+    int Found = 0;
+
     for (var studentData in studentsData) {
-      if (_VerfController.text == studentData[7]) {
+      if (_VerfController.text == studentData[7] &&
+          grpnumber == studentData[4]) {
         Navigator.pushNamed(
           context,
           '/students',
           arguments: grpnumber,
         );
+        Found = 1;
         return;
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Code incorrect')),
-        );
       }
+    }
+    if (Found == 0) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Code incorrect')),
+      );
     }
   }
 
@@ -56,63 +61,77 @@ class _VerifyScreenState extends State<VerifyScreen> {
 
     return Scaffold(
       appBar: AppBar(title: const Text('Tests')),
-      body: Center(
-        child: Container(
-          width: screenWidth * 0.4,
-          child: Form(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                TextFormField(
-                  controller: _VerfController,
-                  decoration: InputDecoration(
-                    hintText: 'Entrez le code du groupe',
-                    suffixIcon: IconButton(
-                      icon: Icon(
-                        _obscureText ? Icons.visibility_off : Icons.visibility,
-                      ),
-                      onPressed: () {
-                        setState(() {
-                          _obscureText = !_obscureText;
-                        });
-                      },
-                    ),
-                  ),
-                  obscureText: _obscureText,
-                  validator: (String? value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Veuillez entrer le code';
-                    }
-                    return null;
-                  },
-                ),
-                Container(
-                  margin: const EdgeInsets.only(top: 20),
-                  child: ElevatedButton(
-                    onPressed: () => _submitData(context, grpnumber),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color.fromARGB(255, 233, 234, 236),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 25, vertical: 20),
-                    ),
-                    child: Text(
-                      'Verifier',
-                      style: TextStyle(
-                        fontSize: screenWidth > 500 ? 15 : 12,
-                        fontWeight: FontWeight.bold,
-                        color: Color.fromARGB(136, 36, 36, 36),
-                      ),
-                    ),
-                  ),
-                ),
-              ],
+      body: Stack(
+        alignment: Alignment.center,
+        children: [
+          Container(
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage('lib/screens/assets/Background.png'),
+                fit: BoxFit.fill,
+              ),
             ),
           ),
-        ),
+          Container(
+            width: screenWidth * 0.4,
+            child: Form(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  TextFormField(
+                    controller: _VerfController,
+                    decoration: InputDecoration(
+                      hintText: 'Entrez le code du groupe',
+                      suffixIcon: IconButton(
+                        icon: Icon(
+                          _obscureText
+                              ? Icons.visibility_off
+                              : Icons.visibility,
+                        ),
+                        onPressed: () {
+                          setState(() {
+                            _obscureText = !_obscureText;
+                          });
+                        },
+                      ),
+                    ),
+                    obscureText: _obscureText,
+                    validator: (String? value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Veuillez entrer le code';
+                      }
+                      return null;
+                    },
+                  ),
+                  Container(
+                    margin: const EdgeInsets.only(top: 20),
+                    child: ElevatedButton(
+                      onPressed: () => _submitData(context, grpnumber),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor:
+                            const Color.fromARGB(255, 222, 223, 225),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 25, vertical: 20),
+                      ),
+                      child: Text(
+                        'Verifier',
+                        style: TextStyle(
+                          fontSize: screenWidth > 500 ? 15 : 12,
+                          fontWeight: FontWeight.bold,
+                          color: const Color.fromARGB(255, 48, 89, 139),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

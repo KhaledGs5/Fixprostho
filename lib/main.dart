@@ -1,6 +1,7 @@
 import 'package:Fixprostho/screens/AddScreen.dart';
 import 'package:Fixprostho/screens/CasesScreen.dart';
 import 'package:Fixprostho/screens/HomeScreen.dart';
+import 'package:Fixprostho/screens/ModifyScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:Fixprostho/screens/StudentScreen.dart';
 import 'package:Fixprostho/screens/GroupsScreen.dart';
@@ -30,6 +31,7 @@ class MyApp extends StatelessWidget {
         '/cases': (context) => CasesScreen(),
         '/valid': (context) => ValidateScreen(),
         '/verify': (context) => VerifyScreen(),
+        '/modifyBinome': (context) => ModifyScreen(),
       },
     );
   }

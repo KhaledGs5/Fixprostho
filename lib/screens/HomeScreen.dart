@@ -9,38 +9,52 @@ class HomeScreen extends StatelessWidget {
     double screenWidth = MediaQuery.of(context).size.width;
 
     return Scaffold(
-      appBar: AppBar(title: Text('Fixprostho')),
-      body: Align(
-        alignment: Alignment.center,
-        child: Container(
-          height: screenHeight * 0.9, // 80% of screen height
-          width: screenWidth * 0.9, // 80% of screen width
-          decoration: BoxDecoration(
-            image: DecorationImage(
-              image: AssetImage('lib/screens/assets/HomeBackground.png'),
-              fit: BoxFit.contain,
+      appBar: AppBar(
+        title: const Text('Fixprostho'),
+      ),
+      body: Stack(
+        children: [
+          Container(
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage(
+                    'lib/screens/assets/${screenWidth > 1000 ? 'WinBackground.png' : screenWidth > 600 ? 'IPadBackground.png' : 'PhoneBackground.png'}'),
+                fit: BoxFit.fill,
+              ),
             ),
           ),
-          child: Container(
+          Align(
+            alignment: Alignment.center,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Container(
                   alignment: Alignment.center,
-                  margin: EdgeInsets.only(bottom: 30),
+                  margin: EdgeInsets.only(bottom: screenHeight * 0.03),
                   child: ElevatedButton(
                     onPressed: () {
                       Navigator.pushNamed(context, '/groups');
                     },
-                    child: Text(
-                      'Afficher les groupes',
-                      style: TextStyle(
-                        color: Colors.white60,
-                        fontSize: 15,
-                      ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Image.asset(
+                          'lib/screens/assets/Groups.png',
+                          width: 20,
+                          height: 20,
+                        ),
+                        SizedBox(width: 10),
+                        Text(
+                          'Afficher les groupes',
+                          style: TextStyle(
+                            color: const Color.fromARGB(255, 48, 89, 139),
+                            fontSize: 15,
+                          ),
+                        ),
+                      ],
                     ),
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color.fromARGB(255, 59, 78, 111),
+                      backgroundColor: const Color.fromARGB(255, 222, 223, 225),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10),
                       ),
@@ -57,15 +71,26 @@ class HomeScreen extends StatelessWidget {
                     onPressed: () {
                       Navigator.pushNamed(context, '/add');
                     },
-                    child: Text(
-                      'Ajouter un nouveau binôme',
-                      style: TextStyle(
-                        color: const Color.fromARGB(153, 17, 17, 17),
-                        fontSize: 15,
-                      ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Image.asset(
+                          'lib/screens/assets/AddGroup.png',
+                          width: 20,
+                          height: 20,
+                        ),
+                        SizedBox(width: 10),
+                        Text(
+                          'Ajouter un nouveau binôme',
+                          style: TextStyle(
+                            color: const Color.fromARGB(255, 48, 89, 139),
+                            fontSize: 15,
+                          ),
+                        ),
+                      ],
                     ),
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color.fromARGB(255, 143, 144, 147),
+                      backgroundColor: const Color.fromARGB(255, 222, 223, 225),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10),
                       ),
@@ -93,15 +118,17 @@ class HomeScreen extends StatelessWidget {
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10),
                       ),
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 20,
+                        vertical: 20,
+                      ),
                     ),
                   ),
                 ),
               ],
             ),
           ),
-        ),
+        ],
       ),
     );
   }

@@ -64,53 +64,78 @@ class _GroupsScreenState extends State<GroupsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    double screenWidth = MediaQuery.of(context).size.width;
     return Scaffold(
       appBar: AppBar(title: const Text('Groupes')),
-      body: Center(
-        child: FutureBuilder<List<int>>(
-          future: listofnumbers,
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return const CircularProgressIndicator();
-            } else if (snapshot.hasError) {
-              return const Text('Failed to load groups');
-            } else if (snapshot.hasData) {
-              return Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: snapshot.data!.map((groupNumber) {
-                  return Container(
-                    margin: const EdgeInsets.only(bottom: 20),
-                    child: ElevatedButton(
-                      onPressed: () {
-                        Navigator.pushNamed(
-                          context,
-                          '/verify',
-                          arguments: grpnumber = groupNumber,
-                        );
-                      },
-                      child: Text(
-                        'Groupe $groupNumber',
-                        style: const TextStyle(
-                          color: Colors.white60,
+      body: Stack(
+        alignment: Alignment.center,
+        children: [
+          Container(
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage('lib/screens/assets/Background.png'),
+                fit: BoxFit.fill,
+              ),
+            ),
+          ),
+          FutureBuilder<List<int>>(
+            future: listofnumbers,
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const CircularProgressIndicator();
+              } else if (snapshot.hasError) {
+                return const Text('Failed to load groups');
+              } else if (snapshot.hasData) {
+                return GridView.builder(
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: screenWidth > 1000
+                        ? 4
+                        : screenWidth > 600
+                            ? 3
+                            : 2,
+                    mainAxisSpacing: 0,
+                    crossAxisSpacing: 20,
+                    mainAxisExtent: 100,
+                  ),
+                  itemCount: snapshot.data!.length,
+                  itemBuilder: (context, index) {
+                    return Center(
+                      child: SizedBox(
+                        width: 150,
+                        height: 50,
+                        child: ElevatedButton(
+                          onPressed: () {
+                            Navigator.pushNamed(
+                              context,
+                              '/verify',
+                              arguments: grpnumber = snapshot.data![index],
+                            );
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor:
+                                const Color.fromARGB(255, 222, 223, 225),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                          ),
+                          child: Text(
+                            'Groupe ${snapshot.data![index]}',
+                            style: const TextStyle(
+                              color: const Color.fromARGB(255, 48, 89, 139),
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
                         ),
                       ),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color.fromARGB(255, 59, 78, 111),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 30, vertical: 20),
-                      ),
-                    ),
-                  );
-                }).toList(),
-              );
-            } else {
-              return const Text('No groups found');
-            }
-          },
-        ),
+                    );
+                  },
+                );
+              } else {
+                return const Text('No groups found');
+              }
+            },
+          ),
+        ],
       ),
     );
   }

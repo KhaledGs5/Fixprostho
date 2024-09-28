@@ -50,6 +50,54 @@ class _StudentScreenState extends State<StudentScreen> {
     return groupsData.toList();
   }
 
+  Future<void> deleteData(
+    int binomeID,
+  ) async {
+    try {
+      final directory = await getApplicationDocumentsDirectory();
+      final path = '${directory.path}/Students.csv';
+      final file = File(path);
+
+      if (!await file.exists()) return;
+
+      final input = file.openRead();
+      List<List<dynamic>> rows = await input
+          .transform(utf8.decoder)
+          .transform(CsvToListConverter())
+          .toList();
+
+      int rowIndex = -1;
+      for (int i = 0; i < rows.length; i++) {
+        if (rows[i][0] == binomeID) {
+          rowIndex = i;
+          break;
+        }
+      }
+
+      if (rowIndex != -1) {
+        rows.removeAt(rowIndex);
+
+        for (int i = rowIndex; i < rows.length; i++) {
+          rows[i][6] = (rows[i][6] - 1).toString();
+        }
+
+        String csvData = const ListToCsvConverter().convert(rows);
+        await file.writeAsString(csvData);
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Supprimé avec succès!')),
+        );
+        Navigator.pushNamed(
+          context,
+          '/students',
+          arguments: grpnumber,
+        );
+      }
+    } catch (e) {
+      print('An error occurred while deleting the data: $e');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final int grpnumber = ModalRoute.of(context)!.settings.arguments as int;
@@ -58,61 +106,208 @@ class _StudentScreenState extends State<StudentScreen> {
       appBar: AppBar(
         title: Text('Groupe $grpnumber'),
       ),
-      body: FutureBuilder<List<dynamic>>(
-        future: futureStudents,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
-          } else if (snapshot.hasError) {
-            return Center(child: Text('Error: ${snapshot.error}'));
-          } else if (snapshot.hasData) {
-            List<dynamic> students = snapshot.data!;
-            students.sort((a, b) => a[0].compareTo(b[0]));
-            return ListView.builder(
-              itemCount: students.length,
-              itemBuilder: (context, index) {
-                var student = students[index];
-                return Padding(
-                  padding: const EdgeInsets.only(top: 30),
-                  child: Center(
-                    child: Container(
-                      width: screenWidth * 0.5,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          if (student[1] != 'null' ||
-                              student[2] != 'null' ||
-                              student[3] != 'null')
-                            ElevatedButton(
-                              onPressed: () {
-                                Navigator.pushNamed(context, '/cases',
-                                    arguments: {'BinomeId': student[0]});
-                              },
-                              child: Text('B${student[6]}G$grpnumber'),
-                            ),
-                          if (student[1] != 'null')
-                            ListTile(
-                              title: Text('Etudiant 1: ${student[1]}'),
-                            ),
-                          if (student[2] != 'null')
-                            ListTile(
-                              title: Text('Etudiant 2: ${student[2]}'),
-                            ),
-                          if (student[3] != 'null')
-                            ListTile(
-                              title: Text('Etudiant 3: ${student[3]}'),
-                            ),
-                        ],
+      body: Column(
+        children: [
+          Row(
+            children: [
+              Container(
+                margin: EdgeInsets.only(left: 10),
+                child: IconButton(
+                  icon: Icon(Icons.home),
+                  onPressed: () {
+                    Navigator.pushNamed(
+                      context,
+                      '/',
+                    );
+                  },
+                ),
+              ),
+            ],
+          ),
+          Expanded(
+            child: Container(
+              decoration: BoxDecoration(
+                image: DecorationImage(
+                  image: AssetImage('lib/screens/assets/Background.png'),
+                  fit: BoxFit.fill,
+                ),
+              ),
+              child: FutureBuilder<List<dynamic>>(
+                future: futureStudents,
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return Center(child: CircularProgressIndicator());
+                  } else if (snapshot.hasError) {
+                    return Center(child: Text('Error: ${snapshot.error}'));
+                  } else if (snapshot.hasData) {
+                    List<dynamic> students = snapshot.data!;
+                    students.sort((a, b) => a[0].compareTo(b[0]));
+                    return GridView.builder(
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: screenWidth > 1000
+                            ? 4
+                            : screenWidth > 600
+                                ? 2
+                                : 1,
+                        mainAxisSpacing: 0,
+                        crossAxisSpacing: 20,
+                        mainAxisExtent: 250,
                       ),
-                    ),
-                  ),
-                );
-              },
-            );
-          } else {
-            return Center(child: Text('No data available'));
-          }
-        },
+                      itemCount: students.length,
+                      itemBuilder: (context, index) {
+                        var student = students[index];
+                        return Center(
+                          child: Container(
+                            margin: EdgeInsets.only(top: 30),
+                            child: SizedBox(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  if (student[1] != 'null' ||
+                                      student[2] != 'null' ||
+                                      student[3] != 'null')
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        ElevatedButton(
+                                          onPressed: () {
+                                            Navigator.pushNamed(
+                                                context, '/cases', arguments: {
+                                              'BinomeId': student[0]
+                                            });
+                                          },
+                                          style: ElevatedButton.styleFrom(
+                                            backgroundColor:
+                                                const Color.fromARGB(
+                                                    255, 222, 223, 225),
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(20),
+                                            ),
+                                          ),
+                                          child: Text(
+                                            'B${student[6]}G$grpnumber',
+                                            style: const TextStyle(
+                                              color: const Color.fromARGB(
+                                                  255, 48, 89, 139),
+                                            ),
+                                          ),
+                                        ),
+                                        SizedBox(width: 10),
+                                        ElevatedButton(
+                                          onPressed: () {
+                                            Navigator.pushNamed(
+                                                context, '/modifyBinome',
+                                                arguments: {
+                                                  'BinomeId': student[0]
+                                                });
+                                          },
+                                          style: ElevatedButton.styleFrom(
+                                            backgroundColor:
+                                                const Color.fromARGB(
+                                                    255, 222, 223, 225),
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(20),
+                                            ),
+                                          ),
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: [
+                                              Icon(
+                                                Icons.edit,
+                                                size: 15,
+                                                color: const Color.fromARGB(
+                                                    255, 48, 89, 139),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        SizedBox(width: 10),
+                                        ElevatedButton(
+                                          onPressed: () {
+                                            deleteData(student[0]);
+                                          },
+                                          style: ElevatedButton.styleFrom(
+                                            backgroundColor:
+                                                const Color.fromARGB(
+                                                    255, 222, 223, 225),
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(20),
+                                            ),
+                                          ),
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: [
+                                              Icon(
+                                                Icons.delete,
+                                                size: 15,
+                                                color: const Color.fromARGB(
+                                                    255, 48, 89, 139),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  if (student[1] != 'null')
+                                    ListTile(
+                                      title: Center(
+                                        child: Text(
+                                          'Etudiant 1: ${student[1]}',
+                                          style: const TextStyle(
+                                            color: const Color.fromARGB(
+                                                255, 48, 89, 139),
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  if (student[2] != 'null')
+                                    ListTile(
+                                      title: Center(
+                                        child: Text(
+                                          'Etudiant 2: ${student[2]}',
+                                          style: const TextStyle(
+                                            color: const Color.fromARGB(
+                                                255, 48, 89, 139),
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  if (student[3] != 'null')
+                                    ListTile(
+                                      title: Center(
+                                        child: Text(
+                                          'Etudiant 3: ${student[3]}',
+                                          style: const TextStyle(
+                                            color: const Color.fromARGB(
+                                                255, 48, 89, 139),
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        );
+                      },
+                    );
+                  } else {
+                    return Center(child: Text('No data available'));
+                  }
+                },
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
