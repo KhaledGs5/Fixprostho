@@ -78,11 +78,15 @@ class _StudentScreenState extends State<StudentScreen> {
         rows.removeAt(rowIndex);
 
         for (int i = rowIndex; i < rows.length; i++) {
-          rows[i][6] = (rows[i][6] - 1).toString();
+          if (rows[i][4] == grpnumber) {
+            rows[i][6] = (rows[i][6] - 1).toString();
+          }
         }
 
         String csvData = const ListToCsvConverter().convert(rows);
         await file.writeAsString(csvData);
+        deleteCases(binomeID);
+        deleteTests(binomeID);
 
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Supprimé avec succès!')),
@@ -96,6 +100,52 @@ class _StudentScreenState extends State<StudentScreen> {
     } catch (e) {
       print('An error occurred while deleting the data: $e');
     }
+  }
+
+  Future<void> deleteCases(int BID) async {
+    final directory = await getApplicationDocumentsDirectory();
+    final path = '${directory.path}/Cases.csv';
+    final file = File(path);
+
+    if (!await file.exists()) return;
+
+    final input = file.openRead();
+    List<List<dynamic>> rows = await input
+        .transform(utf8.decoder)
+        .transform(CsvToListConverter())
+        .toList();
+
+    for (int i = rows.length - 1; i >= 0; i--) {
+      if (rows[i][4] == BID) {
+        rows.removeAt(i);
+      }
+    }
+
+    String csvData = const ListToCsvConverter().convert(rows);
+    await file.writeAsString(csvData);
+  }
+
+  Future<void> deleteTests(int BID) async {
+    final directory = await getApplicationDocumentsDirectory();
+    final path = '${directory.path}/Tests.csv';
+    final file = File(path);
+
+    if (!await file.exists()) return;
+
+    final input = file.openRead();
+    List<List<dynamic>> rows = await input
+        .transform(utf8.decoder)
+        .transform(CsvToListConverter())
+        .toList();
+
+    for (int i = rows.length - 1; i >= 0; i--) {
+      if (rows[i][5] == BID) {
+        rows.removeAt(i);
+      }
+    }
+
+    String csvData = const ListToCsvConverter().convert(rows);
+    await file.writeAsString(csvData);
   }
 
   @override
