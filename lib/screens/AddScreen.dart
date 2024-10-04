@@ -114,16 +114,30 @@ class _FormExampleState extends State<FormExample> {
         }
       }
       if (group == 1) {
-        Code = "Grp1";
+        Code = "G251";
       } else if (group == 2) {
-        Code = "Grp2";
+        Code = "M134";
       } else if (group == 3) {
-        Code = "Grp3";
+        Code = "X987";
+      } else if (group == 4) {
+        Code = "A432";
+      } else if (group == 5) {
+        Code = "T209";
+      } else if (group == 6) {
+        Code = "L591";
+      } else if (group == 7) {
+        Code = "Q888";
+      } else if (group == 8) {
+        Code = "H103";
+      } else if (group == 9) {
+        Code = "B472";
+      } else if (group == 10) {
+        Code = "W756";
       } else {
         Code = "";
       }
       int binomenumber = bnum;
-      
+
       List<dynamic> newData = [
         name1,
         name2 ?? 'null',
@@ -325,7 +339,7 @@ class _FormExampleState extends State<FormExample> {
                     _selectedGroup = newValue;
                   });
                 },
-                items: List.generate(20, (index) => index).map((int value) {
+                items: List.generate(10, (index) => index + 1).map((int value) {
                   return DropdownMenuItem<int>(
                     value: value,
                     child: Text(value.toString()),
