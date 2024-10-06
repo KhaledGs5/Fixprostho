@@ -2,6 +2,8 @@ import 'package:Fixprostho/screens/AddScreen.dart';
 import 'package:Fixprostho/screens/CasesScreen.dart';
 import 'package:Fixprostho/screens/HomeScreen.dart';
 import 'package:Fixprostho/screens/ModifyScreen.dart';
+import 'package:Fixprostho/screens/ValidateGroupsScreen.dart';
+import 'package:Fixprostho/screens/ValidateVerifyScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:Fixprostho/screens/StudentScreen.dart';
 import 'package:Fixprostho/screens/GroupsScreen.dart';
@@ -32,6 +34,8 @@ class MyApp extends StatelessWidget {
         '/valid': (context) => ValidateScreen(),
         '/verify': (context) => VerifyScreen(),
         '/modifyBinome': (context) => ModifyScreen(),
+        '/validGroups': (context) => ValidateGroupsScreen(),
+        '/verfValid': (context) => ValidateVerifyScreen(),
       },
     );
   }

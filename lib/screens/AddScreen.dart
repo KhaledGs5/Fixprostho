@@ -75,6 +75,7 @@ class _FormExampleState extends State<FormExample> {
 
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Ajouté avec succès!')),
+
       );
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(

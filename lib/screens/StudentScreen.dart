@@ -250,7 +250,8 @@ class _StudentScreenState extends State<StudentScreen> {
                                             Navigator.pushNamed(
                                                 context, '/modifyBinome',
                                                 arguments: {
-                                                  'BinomeId': student[0]
+                                                  'BinomeId': student[0],
+                                                  'GroupNumber': grpnumber,
                                                 });
                                           },
                                           style: ElevatedButton.styleFrom(

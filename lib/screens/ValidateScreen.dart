@@ -17,7 +17,8 @@ class _ValidateScreenState extends State<ValidateScreen> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    futureValidatedStudents = _fetchAllValidatedBinome();
+    int grpnumber = ModalRoute.of(context)!.settings.arguments as int;
+    futureValidatedStudents = _fetchAllValidatedBinome(grpnumber);
   }
 
   bool stringToBool(String str) {
@@ -39,12 +40,14 @@ class _ValidateScreenState extends State<ValidateScreen> {
     return fields;
   }
 
-  Future<List<dynamic>> _fetchAllValidatedBinome() async {
+  Future<List<dynamic>> _fetchAllValidatedBinome(int grpnumber) async {
     List<List<dynamic>> studentsData = await readData();
     Set<List<dynamic>> allData = {};
 
     for (var studentData in studentsData) {
-      allData.add(studentData);
+      if (studentData[4] == grpnumber) {
+        allData.add(studentData);
+      }
     }
 
     return allData.toList();

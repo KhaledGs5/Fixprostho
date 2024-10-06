@@ -59,6 +59,7 @@ dev_dependencies:
 # The following section is specific to Flutter packages.
 flutter:
   assets:
+    - lib/screens/assets/Students.csv
     - lib/screens/assets/
   uses-material-design: true
 
